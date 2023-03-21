@@ -48,7 +48,7 @@ jobs:
         if: always() && steps.build-extensions.outcome == 'success'
         uses: ./.github/composite-actions/install-extensions
 
-            - name: Run JDBC Tests
+      - name: Run JDBC Tests
         id: jdbc
         if: always() && steps.install-extensions.outcome == 'success'
         timeout-minutes: 60
