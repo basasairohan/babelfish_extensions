@@ -7,20 +7,17 @@ on:
 jobs:
 
   run-all-tests:
-    env:
-      BRANCHES: 'BABEL_2_X_DEV'
-
     runs-on: ubuntu-20.04
     
-    # strategy:
-    #   matrix:
-    #     branch: ${{ env.BRANCHES }}
+    strategy:
+      matrix:
+        branch: ['BABEL_3_X_DEV', 'BABEL_2_X_DEV']
 
     steps:
       - uses: actions/checkout@v2
         id: checkout
         with: 
-          ref: ${{ env.BRANCHES }}
+          ref: ${{ matrix.branch }}
 
       - name: Install Dependencies
         id: install-dependencies
