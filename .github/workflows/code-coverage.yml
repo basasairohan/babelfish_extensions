@@ -12,15 +12,15 @@ jobs:
 
     runs-on: ubuntu-20.04
     
-    strategy:
-      matrix:
-        branch: ${{ env.BRANCHES }}
+    # strategy:
+    #   matrix:
+    #     branch: ${{ env.BRANCHES }}
 
     steps:
       - uses: actions/checkout@v2
         id: checkout
         with: 
-          ref: ${{ matrix.branch }}
+          ref: ${{ env.BRANCHES }}
 
       - name: Install Dependencies
         id: install-dependencies
