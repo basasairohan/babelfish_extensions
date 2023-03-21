@@ -5,11 +5,13 @@ on:
     - cron: '* * * * *' # run every minute
 
 jobs:
+
   run-all-tests:
     env:
       BRANCHES: 'BABEL_3_X_DEV'
-      
+
     runs-on: ubuntu-20.04
+    
     strategy:
       matrix:
         branch: ${{ env.BRANCHES }}
