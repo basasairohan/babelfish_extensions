@@ -1,12 +1,8 @@
 name: Code Coverage
 on:
   workflow_dispatch:
-    inputs:
-      branch:
-        required: false
-        default: 'BABEL_3_X_DEV'
   schedule:
-    - cron: '* * * * *'  # run every minute, for every midnight [0 0 * * *]
+    - cron: '0 0 * * *'  # runs every midnight
 
 jobs:
 
