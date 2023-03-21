@@ -1,8 +1,12 @@
 name: Code Coverage
 on:
   workflow_dispatch:
+    inputs:
+      branch:
+        required: false
+        default: 'BABEL_3_X_DEV'
   schedule:
-    - cron: '* * * * *' # run every minute
+    - cron: '0 0 * * *'  # run every midnight
 
 jobs:
 
@@ -17,7 +21,7 @@ jobs:
       - uses: actions/checkout@v2
         id: checkout
         with: 
-          ref: ${{ matrix.branch }}
+          ref: ${{ if github.event_name == 'workflow_dispatch' }}${{ github.events.input.branch }}${{ else }}${{ matrix.branch }}${{ endif }}
 
       - name: Install Dependencies
         id: install-dependencies
