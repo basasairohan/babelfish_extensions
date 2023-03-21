@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v2
         id: checkout
         with: 
-          ref: ${{ github.event_name == 'workflow_dispatch' }}${{ github.events.input.branch }}${{ matrix.branch }}${{ endif }}
+          ref: ${{ github.event_name == 'workflow_dispatch' }}${{ github.events.input.branch }}${{ matrix.branch }}
 
       - name: Install Dependencies
         id: install-dependencies
