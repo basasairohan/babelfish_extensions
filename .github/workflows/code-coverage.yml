@@ -4,11 +4,11 @@ on:
   schedule:
     - cron: '* * * * *' # run every minute
 
-env:
-  BRANCHES: 'BABEL_3_X_DEV'
-
 jobs:
   run-all-tests:
+    env:
+      BRANCHES: 'BABEL_3_X_DEV'
+      
     runs-on: ubuntu-20.04
     strategy:
       matrix:
