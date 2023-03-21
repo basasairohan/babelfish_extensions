@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        branch: ${{ $BRANCHES.split(',') }}
+        branch: ${{ env.BRANCHES.split(',') }}
 
     steps:
       - uses: actions/checkout@v2
