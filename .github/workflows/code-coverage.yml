@@ -5,7 +5,7 @@ on:
     - cron: '* * * * *' # run every minute
 
 env:
-  BRANCHES: "BABEL_3_X_DEV,BABEL_2_X_DEV"
+  BRANCHES: 'BABEL_3_X_DEV,BABEL_2_X_DEV'
 
 jobs:
   run-all-tests:
