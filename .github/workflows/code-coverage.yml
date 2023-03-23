@@ -219,6 +219,7 @@ jobs:
         run: |
           cd contrib/
           lcov -a babelfishpg_tsql/lcov_test.info -a babelfishpg_tds/lcov_test.info -a babelfishpg_common/lcov_test.info -a babelfishpg_money/lcov_test.info -o lcov.info
+          lcov --csv --summary lcov.info --output-file coverage.csv
           lcov --list lcov.info
       - name: Upload Coverage Report for babelfishpg_tsql extension
         if: always()
