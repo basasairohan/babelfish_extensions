@@ -12,7 +12,7 @@ on:
 jobs:
 
   run-odbc-tests:
-    uses: basasairohan/babelfish_extensions/.github/workflows/odbc-tests.yml@BABEL_3_X_DEV
+    uses: basasairohan/babelfish_extensions/.github/workflows/odbc-tests.yml@code-coverage
     # with:
     #     build_and_install_bbf: true
     # runs-on: ubuntu-20.04
