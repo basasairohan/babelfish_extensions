@@ -1,4 +1,5 @@
 on:
+  workflow_dispatch:
   push:
 
 jobs:
@@ -6,29 +7,32 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.matrix.outputs.matrix }}
-      last: ${{ steps.matrix.outputs.last }}
+      # last: ${{ steps.matrix.outputs.last }}
     steps:
       - id: matrix
         run: |
-          echo "::set-output name=matrix::[\"1\",\"2\"]"
-          echo "::set-output name=last::[\"2\"]"
+          if [[ ${{ github.event_name }} == 'workflow_dispatch' ]]; then
+            echo "::set-output name=matrix::['BABEL_3_X_DEV']"
+          elif [[ true ]]; then
+            echo "::set-output name=matrix::['BABEL_3_X_DEV', 'BABEL_2_X_DEV']"
+          fi
 
   job2:
     needs: [ job1 ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        value: ${{fromJson(needs.job1.outputs.matrix)}}
+        branch: ${{fromJson(needs.job1.outputs.matrix)}}
     steps:
       - run: |
-          echo Current: "${{ matrix.value }}"
+          echo Current: "${{ matrix.branch }}"
 
-  job3:
-    needs: [ job1 ]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        value: ${{fromJson(needs.job1.outputs.last)}}
-    steps:
-      - run: |
-          echo Current: "${{ matrix.value }}"
+  # job3:
+  #   needs: [ job1 ]
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       value: ${{fromJson(needs.job1.outputs.last)}}
+  #   steps:
+  #     - run: |
+  #         echo Current: "${{ matrix.value }}"
