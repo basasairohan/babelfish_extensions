@@ -43,14 +43,16 @@ jobs:
 
       - name: Install SQL Server ODBC Driver
         id: install-sql-server-odbc-driver
-        if: ${{ github.event_name == 'workflow_call' || steps.install-extensions.outcome == 'success' }}
+        # if: ${{ github.event_name == 'workflow_call' || steps.install-extensions.outcome == 'success' }}
+        if: always()
         run: |
           cd ~
           sudo apt-get install msodbcsql17
       
       - name: Install unixODBC Driver
         id: install-unix-odbc-driver
-        if: ${{ github.event_name == 'workflow_call' || steps.install-extensions.outcome == 'success' }}
+        # if: ${{ github.event_name == 'workflow_call' || steps.install-extensions.outcome == 'success' }}
+        if: always()
         run: |
           cd ~
           wget http://www.unixodbc.org/unixODBC-2.3.11.tar.gz
@@ -63,7 +65,8 @@ jobs:
 
       - name: Install psqlODBC Driver
         id: install-psql-odbc-driver
-        if: ${{ github.event_name == 'workflow_call' || steps.install-unix-odbc-driver.outcome=='success' }}
+        # if: ${{ github.event_name == 'workflow_call' || steps.install-unix-odbc-driver.outcome=='success' }}
+        if: always()
         run: |
           cd ~
           wget https://ftp.postgresql.org/pub/odbc/versions/src/psqlodbc-12.01.0000.tar.gz
@@ -78,7 +81,8 @@ jobs:
           echo 'UsageCount=1' | sudo tee -a /etc/odbcinst.ini > /dev/null
       
       - name: Run ODBC Tests
-        if: steps.install-sql-server-odbc-driver.outcome == 'success' && steps.install-psql-odbc-driver.outcome == 'success'
+        # if: steps.install-sql-server-odbc-driver.outcome == 'success' && steps.install-psql-odbc-driver.outcome == 'success'
+        if: always()
         run: |
           cd test/odbc
           cmake -S . -B build
