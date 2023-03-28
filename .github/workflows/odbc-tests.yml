@@ -18,27 +18,27 @@ jobs:
 
       - name: Install Dependencies
         id: install-dependencies
-        if: ${{ ((github.event_name == 'workflow_call' && github.event.inputs.build_and_install_bbf) || (github.event_name != 'workflow_call')) && (steps.build-extensions.outcome == 'success') }}
+        if: ${{ (github.event_name != 'workflow_call' || github.event.inputs.build_and_install_bbf) && (steps.build-extensions.outcome == 'success') }}
         uses: ./.github/composite-actions/install-dependencies
 
       - name: Build Modified Postgres
         id: build-modified-postgres
-        if: ${{ ((github.event_name == 'workflow_call' && github.event.inputs.build_and_install_bbf) || (github.event_name != 'workflow_call')) && (steps.build-extensions.outcome == 'success') }}
+        if: ${{ (github.event_name != 'workflow_call' || github.event.inputs.build_and_install_bbf) && (steps.build-extensions.outcome == 'success') }}
         uses: ./.github/composite-actions/build-modified-postgres
       
       - name: Compile ANTLR
         id: compile-antlr
-        if: ${{ ((github.event_name == 'workflow_call' && github.event.inputs.build_and_install_bbf) || (github.event_name != 'workflow_call')) && (steps.build-extensions.outcome == 'success') }}
+        if: ${{ (github.event_name != 'workflow_call' || github.event.inputs.build_and_install_bbf) && (steps.build-extensions.outcome == 'success') }}
         uses: ./.github/composite-actions/compile-antlr
       
       - name: Build Extensions
         id: build-extensions
-        if: ${{ ((github.event_name == 'workflow_call' && github.event.inputs.build_and_install_bbf) || (github.event_name != 'workflow_call')) && (steps.build-extensions.outcome == 'success') }}
+        if: ${{ (github.event_name != 'workflow_call' || github.event.inputs.build_and_install_bbf) && (steps.build-extensions.outcome == 'success') }}
         uses: ./.github/composite-actions/build-extensions
       
       - name: Install Extensions
         id: install-extensions
-        if: ${{ ((github.event_name == 'workflow_call' && github.event.inputs.build_and_install_bbf) || (github.event_name != 'workflow_call')) && (steps.build-extensions.outcome == 'success') }}
+        if: ${{ (github.event_name != 'workflow_call' || github.event.inputs.build_and_install_bbf) && (steps.build-extensions.outcome == 'success') }}
         uses: ./.github/composite-actions/install-extensions
 
       - name: Install SQL Server ODBC Driver
