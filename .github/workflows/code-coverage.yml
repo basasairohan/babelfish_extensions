@@ -3,10 +3,11 @@ on:
   schedule:
     - cron: '0 0 * * *'  # runs every midnight
   workflow_dispatch:
+  push:
 
 jobs:
 
-  job1:
+  generate-branch-names:
     runs-on: ubuntu-20.04
     outputs:
       matrix: ${{ steps.matrix.outputs.branches }}
@@ -20,16 +21,13 @@ jobs:
           fi
 
   run-all-tests:
-    needs: [ job1 ]
+    needs: [ generate-branch-names ]
     runs-on: ubuntu-20.04
     
     strategy:
       fail-fast: false
       matrix:
-        branch: ${{fromJson(needs.job1.outputs.matrix)}}
-        # include: 
-        #   - branch: 'BABEL_3_X_DEV'
-        #   - branch: ${{ ((github.event_name == 'workflow_dispatch' && 'BABEL_3_X_DEV') || 'BABEL_2_X_DEV') }}   
+        branch: ${{fromJson(needs.generate-branch-names.outputs.matrix)}} 
 
     steps:
       - uses: actions/checkout@v2
