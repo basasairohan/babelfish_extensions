@@ -151,7 +151,7 @@ jobs:
 
       - name: Run ODBC tests
         id: run-odbc-tests
-        if: always() && steps.install-extensions.outcome == 'success'
+        if: always()
         uses: ./.github/workflows/odbc-tests@{ref}
         with:
           build_and_install_bbf: true
