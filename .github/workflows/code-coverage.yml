@@ -13,8 +13,8 @@ jobs:
 
   run-odbc-tests:
     uses: basasairohan/babelfish_extensions/.github/workflows/odbc-tests.yml@BABEL_3_X_DEV
-    with:
-        build_and_install_bbf: true
+    # with:
+    #     build_and_install_bbf: true
     # runs-on: ubuntu-20.04
     # strategy:
     #   fail-fast: false
