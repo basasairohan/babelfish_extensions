@@ -11,7 +11,7 @@ on:
 
 jobs:
 
-  run-all-tests:
+  run-odbc-tests:
     runs-on: ubuntu-20.04
     
     strategy:
@@ -19,13 +19,17 @@ jobs:
       matrix:
         include: 
           - branch: ${{ ((github.event_name == 'workflow_dispatch' && github.event.inputs.branch_name) || 'BABEL_3_X_DEV') }}
-          - branch: ${{ ((github.event_name == 'workflow_dispatch' && github.event.inputs.branch_name) || 'BABEL_2_X_DEV') }}   
+          - branch: ${{ ((github.event_name == 'workflow_dispatch' && github.event.inputs.branch_name) || 'BABEL_2_X_DEV') }} 
 
-    steps:
-      - uses: actions/checkout@v2
-        id: checkout
-        with: 
-          ref: ${{ matrix.branch }}
+    uses: basasairohan/babelfish_extensions/.github/workflows/odbc-tests@BABEL_3_X_DEV
+    with:
+        build_and_install_bbf: true
+
+    # steps:
+    #   - uses: actions/checkout@v2
+    #     id: checkout
+    #     with: 
+    #       ref: ${{ matrix.branch }}
 
       # - name: Install Dependencies
       #   id: install-dependencies
@@ -149,12 +153,12 @@ jobs:
       #         dotnet test
       #     fi
 
-      - name: Run ODBC tests
-        id: run-odbc-tests
-        if: always()
-        uses: basasairohan/babelfish_extensions/.github/workflows/odbc-tests@BABEL_3_X_DEV
-        with:
-          build_and_install_bbf: true
+      # - name: Run ODBC tests
+      #   id: run-odbc-tests
+      #   if: always()
+      #   uses: basasairohan/babelfish_extensions/.github/workflows/odbc-tests@BABEL_3_X_DEV
+      #   with:
+      #     build_and_install_bbf: true
       
       # - name: Install SQL Server ODBC Driver
       #   id: install-sql-server-odbc-driver
