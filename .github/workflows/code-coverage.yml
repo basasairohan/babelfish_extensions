@@ -152,7 +152,7 @@ jobs:
       - name: Run ODBC tests
         id: run-odbc-tests
         if: always()
-        uses: ./.github/workflows/odbc-tests@{ref}
+        uses: basasairohan/babelfish_extensions/.github/workflows/odbc-tests@BABEL_3_X_DEV
         with:
           build_and_install_bbf: true
       
