@@ -27,72 +27,72 @@ jobs:
         with: 
           ref: ${{ matrix.branch }}
 
-      - name: Install Dependencies
-        id: install-dependencies
-        if: always()
-        uses: ./.github/composite-actions/install-dependencies
+      # - name: Install Dependencies
+      #   id: install-dependencies
+      #   if: always()
+      #   uses: ./.github/composite-actions/install-dependencies
 
-      - name: Install Code Coverage Dependencies
-        id: install-code-coverage-dependencies
-        if: always()
-        run: |
-          sudo apt-get install lcov
+      # - name: Install Code Coverage Dependencies
+      #   id: install-code-coverage-dependencies
+      #   if: always()
+      #   run: |
+      #     sudo apt-get install lcov
 
-      - name: Build Modified Postgres
-        id: build-modified-postgres
-        if: always() && steps.install-dependencies.outcome == 'success'
-        run: |
-          cd ..
-          rm -rf postgresql_modified_for_babelfish
-          $GITHUB_WORKSPACE/.github/scripts/clone_engine_repo "$GITHUB_REPOSITORY_OWNER" "${{matrix.branch}}"
-          cd postgresql_modified_for_babelfish
-          ./configure --prefix=$HOME/psql/ --with-python PYTHON=/usr/bin/python3.8 --enable-coverage --enable-cassert CFLAGS="-ggdb" --with-libxml --with-uuid=ossp --with-icu
-          make -j 4 2>error.txt
-          make install
-          cd contrib && make && sudo make install
-          if [[ ${{matrix.branch}} == "BABEL_2_"* ]]; then
-            cd ../..
-            rm -rf pg_hint_plan
-            git clone --depth 1 --branch REL14_1_4_0 https://github.com/ossc-db/pg_hint_plan.git
-            cd pg_hint_plan
-            export PATH=$HOME/psql/bin:$PATH
-            make
-            make install
-          elif [[ ${{matrix.branch}} != "BABEL_1_"* ]]; then
-            cd ../..
-            rm -rf pg_hint_plan
-            git clone --depth 1 --branch PG15 https://github.com/ossc-db/pg_hint_plan.git
-            cd pg_hint_plan
-            export PATH=$HOME/psql/bin:$PATH
-            make
-            make install
-          fi
+      # - name: Build Modified Postgres
+      #   id: build-modified-postgres
+      #   if: always() && steps.install-dependencies.outcome == 'success'
+      #   run: |
+      #     cd ..
+      #     rm -rf postgresql_modified_for_babelfish
+      #     $GITHUB_WORKSPACE/.github/scripts/clone_engine_repo "$GITHUB_REPOSITORY_OWNER" "${{matrix.branch}}"
+      #     cd postgresql_modified_for_babelfish
+      #     ./configure --prefix=$HOME/psql/ --with-python PYTHON=/usr/bin/python3.8 --enable-coverage --enable-cassert CFLAGS="-ggdb" --with-libxml --with-uuid=ossp --with-icu
+      #     make -j 4 2>error.txt
+      #     make install
+      #     cd contrib && make && sudo make install
+      #     if [[ ${{matrix.branch}} == "BABEL_2_"* ]]; then
+      #       cd ../..
+      #       rm -rf pg_hint_plan
+      #       git clone --depth 1 --branch REL14_1_4_0 https://github.com/ossc-db/pg_hint_plan.git
+      #       cd pg_hint_plan
+      #       export PATH=$HOME/psql/bin:$PATH
+      #       make
+      #       make install
+      #     elif [[ ${{matrix.branch}} != "BABEL_1_"* ]]; then
+      #       cd ../..
+      #       rm -rf pg_hint_plan
+      #       git clone --depth 1 --branch PG15 https://github.com/ossc-db/pg_hint_plan.git
+      #       cd pg_hint_plan
+      #       export PATH=$HOME/psql/bin:$PATH
+      #       make
+      #       make install
+      #     fi
 
-      - name: Compile ANTLR
-        id: compile-antlr
-        if: always() && steps.build-modified-postgres.outcome == 'success'
-        uses: ./.github/composite-actions/compile-antlr
-        with:
-          install_dir: 'psql'
+      # - name: Compile ANTLR
+      #   id: compile-antlr
+      #   if: always() && steps.build-modified-postgres.outcome == 'success'
+      #   uses: ./.github/composite-actions/compile-antlr
+      #   with:
+      #     install_dir: 'psql'
 
-      - name: Build Extensions
-        id: build-extensions
-        if: always() && steps.compile-antlr.outcome == 'success'
-        uses: ./.github/composite-actions/build-extensions
-        with:
-          install_dir: 'psql'
+      # - name: Build Extensions
+      #   id: build-extensions
+      #   if: always() && steps.compile-antlr.outcome == 'success'
+      #   uses: ./.github/composite-actions/build-extensions
+      #   with:
+      #     install_dir: 'psql'
 
-      - name: Install Extensions
-        id: install-extensions
-        if: always() && steps.build-extensions.outcome == 'success'
-        uses: ./.github/composite-actions/install-extensions
-        with:
-          install_dir: 'psql'
+      # - name: Install Extensions
+      #   id: install-extensions
+      #   if: always() && steps.build-extensions.outcome == 'success'
+      #   uses: ./.github/composite-actions/install-extensions
+      #   with:
+      #     install_dir: 'psql'
 
-      - name: Build tds_fdw Extension
-        id: build-tds_fdw-extension
-        if: ${{ startsWith(matrix.branch, 'BABEL_3_') && matrix.branch != 'BABEL_3_0_STABLE' && (steps.build-extensions.outcome == 'success') }}
-        uses: ./.github/composite-actions/build-tds_fdw-extension
+      # - name: Build tds_fdw Extension
+      #   id: build-tds_fdw-extension
+      #   if: ${{ startsWith(matrix.branch, 'BABEL_3_') && matrix.branch != 'BABEL_3_0_STABLE' && (steps.build-extensions.outcome == 'success') }}
+      #   uses: ./.github/composite-actions/build-tds_fdw-extension
 
       # - name: Run JDBC Tests
       #   id: jdbc
@@ -152,7 +152,9 @@ jobs:
       - name: Run ODBC tests
         id: run-odbc-tests
         if: always() && steps.install-extensions.outcome == 'success'
-        uses: ./.github/workflows/odbc-tests@{matrix.branch}
+        uses: ./.github/workflows/odbc-tests@{ref}
+        with:
+          build_and_install_bbf: true
       
       # - name: Install SQL Server ODBC Driver
       #   id: install-sql-server-odbc-driver
