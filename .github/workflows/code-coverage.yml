@@ -14,7 +14,7 @@ jobs:
       - id: matrix
         run: |
           if [[ ${{ github.event_name }} == 'workflow_dispatch' ]]; then
-            echo "::set-output name=branches::[${GITHUB_REF#refs/*/}]"
+            echo "::set-output name=branches::['BABEL_3_X_DEV']"
           elif [[ true ]]; then
             echo "::set-output name=branches::['BABEL_3_X_DEV', 'BABEL_2_X_DEV']"
           fi
