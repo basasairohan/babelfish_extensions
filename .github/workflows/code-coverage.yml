@@ -12,10 +12,10 @@ on:
 jobs:
 
   run-odbc-tests:
-    # runs-on: ubuntu-20.04
     uses: basasairohan/babelfish_extensions/.github/workflows/odbc-tests@BABEL_3_X_DEV
     with:
         build_and_install_bbf: true
+    # runs-on: ubuntu-20.04
     # strategy:
     #   fail-fast: false
     #   matrix:
@@ -253,70 +253,70 @@ jobs:
       #       fileGenerator_password=12345678 \
       #       pytest -s --tb=long -q .
 
-      - name: Generate code coverage HTML report
-        id: code-coverage
-        if: always()
-        run: |
-          export PG_CONFIG=~/psql/bin/pg_config
-          export PG_SRC=~/work/postgresql_modified_for_babelfish
-          export cmake=$(which cmake)
-          cd contrib/babelfishpg_tsql
-          /usr/bin/lcov --gcov-tool /usr/bin/gcov -q --no-external -c -i -d . -d ./ -o lcov_base.info
-          /usr/bin/lcov --gcov-tool /usr/bin/gcov -q --no-external -c -d . -d ./ -o lcov_test.info
-          rm -rf coverage
-          /usr/bin/genhtml -q --legend -o coverage --title='PostgreSQL 15.2' --ignore-errors source --num-spaces=4  lcov_base.info lcov_test.info
-          touch coverage-html-stamp
-          cd ../babelfishpg_tds
-          /usr/bin/lcov --gcov-tool /usr/bin/gcov -q --no-external -c -i -d . -d ./ -o lcov_base.info
-          /usr/bin/lcov --gcov-tool /usr/bin/gcov -q --no-external -c -d . -d ./ -o lcov_test.info
-          rm -rf coverage
-          /usr/bin/genhtml -q --legend -o coverage --title='PostgreSQL 15.2' --ignore-errors source --num-spaces=4  lcov_base.info lcov_test.info
-          touch coverage-html-stamp
-          cd ../babelfishpg_common
-          /usr/bin/lcov --gcov-tool /usr/bin/gcov -q --no-external -c -i -d . -d ./ -o lcov_base.info
-          /usr/bin/lcov --gcov-tool /usr/bin/gcov -q --no-external -c -d . -d ./ -o lcov_test.info
-          rm -rf coverage
-          /usr/bin/genhtml -q --legend -o coverage --title='PostgreSQL 15.2' --ignore-errors source --num-spaces=4  lcov_base.info lcov_test.info
-          touch coverage-html-stamp
-          cd ../babelfishpg_money
-          /usr/bin/lcov --gcov-tool /usr/bin/gcov -q --no-external -c -i -d . -d ./ -o lcov_base.info
-          /usr/bin/lcov --gcov-tool /usr/bin/gcov -q --no-external -c -d . -d ./ -o lcov_test.info
-          rm -rf coverage
-          /usr/bin/genhtml -q --legend -o coverage --title='PostgreSQL 15.2' --ignore-errors source --num-spaces=4  lcov_base.info lcov_test.info
-          touch coverage-html-stamp
-        shell: bash
+      # - name: Generate code coverage HTML report
+      #   id: code-coverage
+      #   if: always()
+      #   run: |
+      #     export PG_CONFIG=~/psql/bin/pg_config
+      #     export PG_SRC=~/work/postgresql_modified_for_babelfish
+      #     export cmake=$(which cmake)
+      #     cd contrib/babelfishpg_tsql
+      #     /usr/bin/lcov --gcov-tool /usr/bin/gcov -q --no-external -c -i -d . -d ./ -o lcov_base.info
+      #     /usr/bin/lcov --gcov-tool /usr/bin/gcov -q --no-external -c -d . -d ./ -o lcov_test.info
+      #     rm -rf coverage
+      #     /usr/bin/genhtml -q --legend -o coverage --title='PostgreSQL 15.2' --ignore-errors source --num-spaces=4  lcov_base.info lcov_test.info
+      #     touch coverage-html-stamp
+      #     cd ../babelfishpg_tds
+      #     /usr/bin/lcov --gcov-tool /usr/bin/gcov -q --no-external -c -i -d . -d ./ -o lcov_base.info
+      #     /usr/bin/lcov --gcov-tool /usr/bin/gcov -q --no-external -c -d . -d ./ -o lcov_test.info
+      #     rm -rf coverage
+      #     /usr/bin/genhtml -q --legend -o coverage --title='PostgreSQL 15.2' --ignore-errors source --num-spaces=4  lcov_base.info lcov_test.info
+      #     touch coverage-html-stamp
+      #     cd ../babelfishpg_common
+      #     /usr/bin/lcov --gcov-tool /usr/bin/gcov -q --no-external -c -i -d . -d ./ -o lcov_base.info
+      #     /usr/bin/lcov --gcov-tool /usr/bin/gcov -q --no-external -c -d . -d ./ -o lcov_test.info
+      #     rm -rf coverage
+      #     /usr/bin/genhtml -q --legend -o coverage --title='PostgreSQL 15.2' --ignore-errors source --num-spaces=4  lcov_base.info lcov_test.info
+      #     touch coverage-html-stamp
+      #     cd ../babelfishpg_money
+      #     /usr/bin/lcov --gcov-tool /usr/bin/gcov -q --no-external -c -i -d . -d ./ -o lcov_base.info
+      #     /usr/bin/lcov --gcov-tool /usr/bin/gcov -q --no-external -c -d . -d ./ -o lcov_test.info
+      #     rm -rf coverage
+      #     /usr/bin/genhtml -q --legend -o coverage --title='PostgreSQL 15.2' --ignore-errors source --num-spaces=4  lcov_base.info lcov_test.info
+      #     touch coverage-html-stamp
+      #   shell: bash
 
-      - name: Summarize code coverage
-        id: code-coverage-summary
-        if: always()
-        run: |
-          cd contrib/
-          lcov -a babelfishpg_tsql/lcov_test.info -a babelfishpg_tds/lcov_test.info -a babelfishpg_common/lcov_test.info -a babelfishpg_money/lcov_test.info -o lcov.info
-          lcov --list lcov.info
-      - name: Upload Coverage Report for babelfishpg_tsql extension
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage_tsql
-          path: contrib/babelfishpg_tsql/coverage/
+      # - name: Summarize code coverage
+      #   id: code-coverage-summary
+      #   if: always()
+      #   run: |
+      #     cd contrib/
+      #     lcov -a babelfishpg_tsql/lcov_test.info -a babelfishpg_tds/lcov_test.info -a babelfishpg_common/lcov_test.info -a babelfishpg_money/lcov_test.info -o lcov.info
+      #     lcov --list lcov.info
+      # - name: Upload Coverage Report for babelfishpg_tsql extension
+      #   if: always()
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: coverage_tsql
+      #     path: contrib/babelfishpg_tsql/coverage/
 
-      - name: Upload Coverage Report for babelfishpg_tds extension
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage_tds
-          path: contrib/babelfishpg_tds/coverage/
+      # - name: Upload Coverage Report for babelfishpg_tds extension
+      #   if: always()
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: coverage_tds
+      #     path: contrib/babelfishpg_tds/coverage/
 
-      - name: Upload Coverage Report for babelfishpg_common extension
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage_common
-          path: contrib/babelfishpg_common/coverage/
+      # - name: Upload Coverage Report for babelfishpg_common extension
+      #   if: always()
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: coverage_common
+      #     path: contrib/babelfishpg_common/coverage/
 
-      - name: Upload Coverage Report for babelfishpg_money extension
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage_money
-          path: contrib/babelfishpg_money/coverage/
+      # - name: Upload Coverage Report for babelfishpg_money extension
+      #   if: always()
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: coverage_money
+      #     path: contrib/babelfishpg_money/coverage/
