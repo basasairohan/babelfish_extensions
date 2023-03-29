@@ -24,12 +24,11 @@ jobs:
         branch: ${{fromJson(needs.job1.outputs.matrix)}}
     steps:
       - run: |
-          my_array = (babel1 babel2 babel3 babel4)
-
-          for i in "${my_array[@]}"
-          do
-            echo $i
+          varlist=( a list of strings )
+          for (( i=0; i<4; i++ )); do
+            echo ${varlist[$i]}
           done
+
 
   # job3:
   #   needs: [ job1 ]
