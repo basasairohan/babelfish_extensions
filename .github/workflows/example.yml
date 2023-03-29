@@ -1,13 +1,12 @@
 on:
   workflow_dispatch:
-  # push:
+  push:
 
 jobs:
   job1:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.matrix.outputs.matrix }}
-      # last: ${{ steps.matrix.outputs.last }}
     steps:
       - id: matrix
         run: |
@@ -25,7 +24,12 @@ jobs:
         branch: ${{fromJson(needs.job1.outputs.matrix)}}
     steps:
       - run: |
-          echo Current: "${{ matrix.branch }}"
+          my_array = (babel1 babel2 babel3 babel4)
+
+          for i in "${my_array[@]}"
+          do
+            echo $i
+          done
 
   # job3:
   #   needs: [ job1 ]
