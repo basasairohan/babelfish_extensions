@@ -26,7 +26,7 @@ jobs:
       - run: |
           extensions=( babelfishpg_tsql babelfishpg_tds babelfishpg_common babelfishpg_money )
           for (( i=0; i<4; i++ )); do
-            echo ${varlist[$i]}
+            echo ${extensions[$i]}
           done
 
 
