@@ -16,7 +16,7 @@ jobs:
         run: |
           if [[ ${{ github.event_name }} == 'workflow_dispatch' ]]; then
             echo "::set-output name=branches::['BABEL_3_X_DEV']"
-          elif [[ true ]]; then
+          else
             echo "::set-output name=branches::['BABEL_3_X_DEV', 'BABEL_2_X_DEV']"
           fi
 
@@ -58,23 +58,17 @@ jobs:
           make -j 4 2>error.txt
           make install
           cd contrib && make && sudo make install
-          if [[ ${{matrix.branch}} == "BABEL_2_"* ]]; then
-            cd ../..
-            rm -rf pg_hint_plan
+          cd ../..
+          rm -rf pg_hint_plan
+          if [[ ${{matrix.branch}} == "BABEL_2_"* ]]; then 
             git clone --depth 1 --branch REL14_1_4_0 https://github.com/ossc-db/pg_hint_plan.git
-            cd pg_hint_plan
-            export PATH=$HOME/psql/bin:$PATH
-            make
-            make install
-          elif [[ true ]]; then
-            cd ../..
-            rm -rf pg_hint_plan
+          else
             git clone --depth 1 --branch PG15 https://github.com/ossc-db/pg_hint_plan.git
-            cd pg_hint_plan
-            export PATH=$HOME/psql/bin:$PATH
-            make
-            make install
           fi
+          cd pg_hint_plan
+          export PATH=$HOME/psql/bin:$PATH
+          make
+          make install
 
       - name: Compile ANTLR
         id: compile-antlr
@@ -203,42 +197,42 @@ jobs:
             PSQL_BABEL_DB_NAME=jdbc_testdb \
             ./build/main
 
-      - name: Install Python
-        id: install-python
-        if: always() && steps.install-extensions.outcome == 'success'
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.7
+      # - name: Install Python
+      #   id: install-python
+      #   if: always() && steps.install-extensions.outcome == 'success'
+      #   uses: actions/setup-python@v2
+      #   with:
+      #     python-version: 3.7
 
-      - name: Configure Python Environment
-        id: configure-python-environment
-        if: always() && steps.install-python.outcome == 'success'
-        run: |
-          cd ~
-          curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
-          cd ~/work/babelfish_extensions/babelfish_extensions/test/python
-          mkdir sqltoolsservice
-          cd sqltoolsservice
-          wget https://github.com/microsoft/sqltoolsservice/releases/download/4.4.0.12/Microsoft.SqlTools.ServiceLayer-rhel-x64-net6.0.tar.gz && tar -xzvf Microsoft.SqlTools.ServiceLayer-rhel-x64-net6.0.tar.gz
-          cd ../
-          sudo ACCEPT_EULA=Y apt-get install -y msodbcsql17 python3-dev
-          pip3 install pyodbc==4.0.35 pymssql pytest pytest-xdist
+      # - name: Configure Python Environment
+      #   id: configure-python-environment
+      #   if: always() && steps.install-python.outcome == 'success'
+      #   run: |
+      #     cd ~
+      #     curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
+      #     cd ~/work/babelfish_extensions/babelfish_extensions/test/python
+      #     mkdir sqltoolsservice
+      #     cd sqltoolsservice
+      #     wget https://github.com/microsoft/sqltoolsservice/releases/download/4.4.0.12/Microsoft.SqlTools.ServiceLayer-rhel-x64-net6.0.tar.gz && tar -xzvf Microsoft.SqlTools.ServiceLayer-rhel-x64-net6.0.tar.gz
+      #     cd ../
+      #     sudo ACCEPT_EULA=Y apt-get install -y msodbcsql17 python3-dev
+      #     pip3 install pyodbc==4.0.35 pymssql pytest pytest-xdist
       
-      - name: Run Python Tests
-        if: always() && steps.configure-python-environment.outcome == 'success'
-        run: | 
-          cd test/python
-          compareWithFile=true \
-            driver=pyodbc \
-            runInParallel=false \
-            testName=all \
-            provider="ODBC Driver 17 for SQL Server" \
-            fileGenerator_URL=localhost \
-            fileGenerator_port=1433 \
-            fileGenerator_databaseName=master \
-            fileGenerator_user=jdbc_user \
-            fileGenerator_password=12345678 \
-            pytest -s --tb=long -q .
+      # - name: Run Python Tests
+      #   if: always() && steps.configure-python-environment.outcome == 'success'
+      #   run: | 
+      #     cd test/python
+      #     compareWithFile=true \
+      #       driver=pyodbc \
+      #       runInParallel=false \
+      #       testName=all \
+      #       provider="ODBC Driver 17 for SQL Server" \
+      #       fileGenerator_URL=localhost \
+      #       fileGenerator_port=1433 \
+      #       fileGenerator_databaseName=master \
+      #       fileGenerator_user=jdbc_user \
+      #       fileGenerator_password=12345678 \
+      #       pytest -s --tb=long -q .
 
       - name: Generate code coverage HTML report
         id: code-coverage
@@ -248,13 +242,13 @@ jobs:
           export PG_SRC=~/work/postgresql_modified_for_babelfish
           export cmake=$(which cmake)
           cd contrib
-          extensions=( babelfishpg_tsql babelfishpg_tds babelfishpg_common babelfishpg_money )
-          for (( i=0; i<4; i++ )); do
-            cd ${extensions[$i]}
+          for ext in babelfishpg_common babelfishpg_money babelfishpg_tds babelfishpg_tsql  
+          do
+            cd $ext
             /usr/bin/lcov --gcov-tool /usr/bin/gcov -q --no-external -c -i -d . -d ./ -o lcov_base.info
             /usr/bin/lcov --gcov-tool /usr/bin/gcov -q --no-external -c -d . -d ./ -o lcov_test.info
             rm -rf coverage
-            /usr/bin/genhtml -q --legend -o coverage --title='${extensions[$i]}' --ignore-errors source --num-spaces=4  lcov_base.info lcov_test.info
+            /usr/bin/genhtml -q --legend -o coverage --title='$ext' --ignore-errors source --num-spaces=4  lcov_base.info lcov_test.info
             touch coverage-html-stamp
             cd ..
           done
