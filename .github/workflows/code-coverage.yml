@@ -65,7 +65,7 @@ jobs:
             export PATH=$HOME/psql/bin:$PATH
             make
             make install
-          elif [[ true]]; then
+          elif [[ true ]]; then
             cd ../..
             rm -rf pg_hint_plan
             git clone --depth 1 --branch PG15 https://github.com/ossc-db/pg_hint_plan.git
