@@ -24,10 +24,9 @@ jobs:
         branch: ${{fromJson(needs.job1.outputs.matrix)}}
     steps:
       - run: |
-          varlist=( a list of strings )
+          extensions=( babelfishpg_tsql babelfishpg_tds babelfishpg_common babelfishpg_money )
           for (( i=0; i<4; i++ )); do
-            extension_name=${varlist[$i]}
-            echo ${{ extension_name }}
+            echo ${varlist[$i]}
           done
 
 
