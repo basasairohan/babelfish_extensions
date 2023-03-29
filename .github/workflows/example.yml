@@ -26,7 +26,8 @@ jobs:
       - run: |
           varlist=( a list of strings )
           for (( i=0; i<4; i++ )); do
-            echo ${varlist[$i]}
+            extension_name=${varlist[$i]}
+            echo ${{ extension_name }}
           done
 
 
